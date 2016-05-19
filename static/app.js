@@ -2,6 +2,8 @@
 var dropzone = document.getElementById('drop-zone');
 var upload = document.getElementById('upload');
 var list =  document.getElementById('list');
+var percentage =  document.getElementById('percentage');
+var loading =  document.getElementById('loading');
 var items = []
 var draggingIndex;
 var placeholder = document.createElement('li');
@@ -38,6 +40,9 @@ function render(){
         upload.classList.remove('visible');
     }
 }
+
+
+
 render();
 
 
@@ -49,8 +54,10 @@ upload.addEventListener('click', function(){
     });
     xhr.responseType = 'arraybuffer';
     xhr.open('POST', '/concat');
-    xhr.send(formData);
-    xhr.onload = function () {
+
+    xhr.addEventListener('load', function () {
+        percentage.innerHTML = '';
+        loading.classList.remove('visible');
         if (this.status === 200) {
             var filename = "";
             var disposition = xhr.getResponseHeader('Content-Disposition');
@@ -86,8 +93,18 @@ upload.addEventListener('click', function(){
                 setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 100); // cleanup
             }
         }
-    };
-
+    });
+    xhr.upload.addEventListener('progress', function(oEvent) {
+      if (oEvent.lengthComputable) {
+        var percentComplete = parseInt(oEvent.loaded / oEvent.total * 100);
+        percentage.innerHTML = percentComplete + '%';
+      } else {
+        // Unable to compute progress information since the total size is unknown
+      }
+    });
+    loading.classList.add('visible');
+    percentage.innerHTML = '0%';
+    xhr.send(formData);
 });
 
 
