@@ -1,0 +1,256 @@
+body{
+    background:#80BA22;
+    font-family: sans-serif;
+}
+
+#drop-zone{
+    position: absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    top:0;
+}
+
+h1 {
+    font-size:3.3em;
+    color:white;
+    text-align:center;
+    margin-top: 200px;
+    margin-bottom:0;
+
+
+}
+h1 .big{
+    font-size:1.5em;
+}
+h5{
+    text-align:center;
+    color:white;
+    font-weight:normal;
+    margin-top:0;
+}
+
+#list {
+    width:500px;
+    margin: 0 auto;
+    padding-left: 0;
+}
+li.item {
+    width:500px;
+    list-style: none;
+    padding: 8px;
+    border-radius: 8px;
+    background-color: #D6FFB1;
+    margin: 5px 0;
+    position: relative;
+}
+
+li.item  span{
+    padding-left: 20px;
+}
+li.item  button {
+    position: absolute;
+    right: 4px;
+    background-color: #80BA22;
+    top: 4px;
+        border: none;
+    border-radius: 8px;
+    font-size:18px;
+    cursor:pointer;
+}
+
+li.item.placeholder {
+    height: 12px;
+    border: 3px dashed #ccc;
+    width: 494px;
+    background-color: rgba(100, 100, 100, 0.4);
+    display:none;
+}
+
+#list.over li.item.placeholder{
+    display:block;
+}
+
+.buttons button {
+    background-color: #80BA22;
+    border: none;
+    border-radius: 8px;
+    font-size:18px;
+    cursor:pointer;
+     background-color: #D6FFB1;
+     padding:20px;
+}
+
+.buttons{
+    text-align: center;
+}
+#upload{
+    display:none;
+}
+
+#upload.visible{
+    display: inline-block;
+}
+.cat-scale{
+}
+
+.cat{
+    position:absolute;
+    left:50%;
+    top: 130px;
+    transform: translate(-50%, -50%);
+    width:100px;
+    height:100px;
+    background:#fff;
+    border-radius:50%;
+    width:100px;
+    height:150px;
+    border-radius:0;
+    border-bottom-left-radius: 40px;
+}
+.cat .ear{
+        content:"";
+        position:absolute;
+        width: 0;
+        height:0;
+        border-style:solid;
+}
+.cat .ear.left{
+
+    border-width: 20px 0 0 20px;
+    border-color: transparent transparent transparent #fff;
+    top:-20px;
+    left:0px;
+}
+
+.cat .ear.right{
+            border-style: solid;
+            border-width: 0 0 20px 20px;
+            border-color: transparent transparent #fff transparent ;
+    top:-20px;
+    right:0px;
+}
+.cat .eye{
+        position:absolute;
+        width:20px;
+        height:20px;
+        border-radius:50%;
+        background:#36465E;
+        z-index:5;
+}
+.cat .eye.left{
+            top:25px;
+        width:10px;
+        height:10px;
+        left:15px;
+        }
+.cat .eye.right{
+            top:25px;
+        width:10px;
+        height:10px;
+        right:15px;
+        }
+
+.cat    .nose{
+        position:absolute;
+        left:40px;
+        top: 30px;
+        width:0
+        height:0;
+
+        border-color: #36465E transparent transparent transparent ;
+        border-width: 10px 10px 0 10px;
+        border-style: solid;
+
+}
+.cat    .mouth{
+        position:absolute;
+        left:25px;
+        width:50px;
+        height:25px;
+        background:#36465E;
+        border-radius: 0px 0px 25px 25px;
+        bottom: 80px;
+
+}
+.cat    .mouth .tongue{
+            position:absolute;
+            left:15px;
+            width:20px;
+            height:35px;
+            border-radius:0 0 20px 20px;
+            background:#FF89D5;
+            animation: tongue-bounce infinite;
+            animation-duration: .5s;
+        }
+
+.cat    .tail{
+        position:absolute;
+        width:0;
+        height:0;
+        bottom:0;
+        left:50px;
+        background:#fff;
+        border-radius: 0 15px 15px 0;
+        width:125px;
+        height:15px;
+    }
+
+.cat .whiskers * {
+    background:#36465E;
+    height:2px;
+    width:30px;
+    position: absolute;
+}
+
+.cat .whiskers.right .top{
+    left: 85px;
+    top: 35px;
+    width:25px;
+    transform: rotate(-20deg);
+}
+
+.cat .whiskers.right .middle{
+    left:85px;
+    top: 45px;
+}
+
+.cat .whiskers.right .bottom{
+    left: 85px;
+    top: 55px;
+    width:25px;
+    transform: rotate(20deg);
+}
+
+.cat .whiskers.left .top{
+    right: 85px;
+    top: 35px;
+    width:25px;
+    transform: rotate(20deg);
+}
+
+.cat .whiskers.left .middle{
+    right:85px;
+    top: 45px;
+}
+
+.cat .whiskers.left .bottom{
+    right: 85px;
+    top: 55px;
+    width:25px;
+    transform: rotate(-20deg);
+}
+
+
+@keyframes tongue-bounce {
+    0%{
+        height:35px;
+    }
+    50%{
+        height:50px;
+    }
+    100%{
+        height:35px;
+    }
+}
+
