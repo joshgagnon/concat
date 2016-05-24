@@ -1,6 +1,7 @@
 body{
     background:#80BA22;
     font-family: sans-serif;
+    padding-bottom:30px;
 }
 
 #drop-zone{
@@ -40,7 +41,9 @@ li.item {
     border-radius: 8px;
     background-color: #D6FFB1;
     margin: 5px 0;
+    color: #074A00;
     position: relative;
+    cursor:move;
 }
 
 li.item  span{
@@ -70,14 +73,23 @@ li.item.placeholder {
 }
 
 .buttons button {
-    background-color: #80BA22;
+        margin-top: 20px;
     border: none;
     border-radius: 8px;
     font-size:18px;
     cursor:pointer;
      background-color: #D6FFB1;
      padding:20px;
+     color:#074A00;
+     transition: all 0.5s ease;
+     box-shadow: 0 0 0 0;
+     cursor:pointer;
 }
+
+.buttons button:hover {
+  box-shadow: 0 0 10px 10px rgba(0,0,0,.5);
+}
+
 
 .buttons{
     text-align: center;
@@ -96,8 +108,11 @@ li.item.placeholder {
     font-size: 0.7em;
     position: absolute;
     bottom: 0;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    text-align:center;
+    background:#80BA22;
+    left:0;
+    right:0;
+
 }
 
 
