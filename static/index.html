@@ -6,9 +6,9 @@
   </head>
 
   <body>
-  <div id="drop-zone">
+  <div id="drop-zone" class="hovering">
     <h1><span class="big">C</span>ON<span class="big">C</span>AT</h1>
-    <h5>Drop some PDFs here</h5>
+    <h5>Drop some PDFs here to join em up.</h5>
     <ul id="list">
     </ul>
     <p class="buttons"><button id="upload">Join those PDFs together</button></p>
@@ -16,8 +16,12 @@
     <div class="cat">
         <div class="ear right"></div>
         <div class="ear left"></div>
-        <div class="eye left"></div>
-        <div class="eye right"></div>
+        <div class="eye left">
+            <div class="glint"> </div>
+        </div>
+        <div class="eye right">
+                <div class="glint"> </div>
+        </div>
         <div class="whiskers right">
             <div class="top"></div>
             <div class="middle"></div>
@@ -33,6 +37,11 @@
             <div class="tongue"></div>
         </div>
         <div class="tail"></div>
+        <div class="tail-curve">
+            <div class="tail-top">
+            </div>
+
+        </div>
     </div>
     </div>
     </div>
@@ -43,7 +52,12 @@
         <div id="percentage"></div>
     </div>
     </div>
+    <div id="footer">
+        © Joshua Gagnon 2016
     </div>
+    </div>
+
       <script src="/static/app.js"></script>
+
   </body>
 </html>

@@ -162,10 +162,17 @@ list.addEventListener('drop', function(e) {
 
 }, false);
 
-dropzone.addEventListener('dragover', function () { this.className = 'hovering'; return false; }, false);
-dropzone.addEventListener('dragend', function () { this.className = ''; return false; }, false);
+
+function endDrag(){
+    this.classList.remove('hovering');
+    return false;
+}
+dropzone.addEventListener('dragover', function () { this.classList.add('hovering'); return false; }, false);
+dropzone.addEventListener('dragend', endDrag, false);
+dropzone.addEventListener('dragexit', endDrag, false);
+dropzone.addEventListener('dragleave', endDrag, false);
 dropzone.addEventListener('drop', function (e) {
-  this.className = '';
+  this.classList.remove('hovering');
   e.preventDefault();
   [].forEach.call(e.dataTransfer.files, function(f){
     if(f.type === 'application/pdf'){

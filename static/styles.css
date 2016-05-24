@@ -89,6 +89,18 @@ li.item.placeholder {
 #upload.visible{
     display: inline-block;
 }
+
+
+#footer {
+    color: white;
+    font-size: 0.7em;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
 .cat-scale{
 }
 
@@ -135,21 +147,54 @@ li.item.placeholder {
         border-radius:50%;
         background:#36465E;
         z-index:5;
+        width:10px;
+        height:10px;
+        transition: all 0.5s ease;
 }
 .cat .eye.left{
-            top:25px;
-        width:10px;
-        height:10px;
+        top:25px;
         left:15px;
-        }
+}
 .cat .eye.right{
-            top:25px;
-        width:10px;
-        height:10px;
+        top:25px;
         right:15px;
-        }
+}
 
-.cat    .nose{
+
+.cat .eye .glint {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 9px solid white;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    transform: rotate(-22deg);
+    top: 3px;
+    position: absolute;
+    right: 7px;
+    opacity: 0;
+    transition: opacity 0.5 ease-in;
+}
+
+
+.hovering .cat .eye{
+    width: 20px;
+    height:20px;
+}
+.hovering .cat .eye.left{
+    top:20px;
+    left:10px;
+}
+.hovering .cat .eye.right{
+    top:20px;
+    right:10px;
+}
+.hovering .cat .eye .glint{
+    opacity: 1;
+}
+.cat   .nose{
         position:absolute;
         left:40px;
         top: 30px;
@@ -171,28 +216,54 @@ li.item.placeholder {
         bottom: 80px;
 
 }
-.cat    .mouth .tongue{
-            position:absolute;
-            left:15px;
-            width:20px;
-            height:35px;
-            border-radius:0 0 20px 20px;
-            background:#FF89D5;
-            animation: tongue-bounce infinite;
-            animation-duration: .5s;
-        }
+.cat  .mouth .tongue{
+    position:absolute;
+    left:15px;
+    width:20px;
+    height:35px;
+    border-radius:0 0 20px 20px;
+    background:#FF89D5;
+    animation: tongue-bounce infinite;
+    animation-duration: 1s;
+}
 
-.cat    .tail{
-        position:absolute;
-        width:0;
-        height:0;
-        bottom:0;
-        left:50px;
-        background:#fff;
-        border-radius: 0 15px 15px 0;
-        width:125px;
-        height:15px;
-    }
+.hovering .cat .mouth .tongue{
+    animation-duration: 0.5s;
+}
+
+.cat .tail{
+
+}
+
+.cat .tail-curve {
+    position: absolute;
+    bottom: 0;
+    left: 97px;
+    width: 50px;
+    height: 50px;
+    border-radius: 0 0 70px 0;
+    border-width: 0 15px 15px 0;
+    border-color: white;
+    border-style: solid;
+    transform-origin: left 57.5px;
+
+}
+.cat .tail-curve .tail-top{
+    background-color: white;
+    width: 15px;
+    height: 30px;
+    border-radius: 7.5px;
+    position: absolute;
+    right: -15px;
+    top: -20px;
+
+}
+
+.hovering .cat .tail-curve{
+    animation: wag infinite;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-in-out;
+}
 
 .cat .whiskers * {
     background:#36465E;
@@ -249,6 +320,20 @@ li.item.placeholder {
     }
     100%{
         height:35px;
+    }
+}
+
+
+
+@keyframes wag {
+    0%{
+        transform: rotate(-20deg)
+    }
+    50%{
+        transform: rotate(0deg)
+    }
+    100%{
+        transform: rotate(-20deg)
     }
 }
 
