@@ -124,6 +124,7 @@ li.item.placeholder {
     left:50%;
     top: 130px;
     transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
     width:100px;
     height:100px;
     background:#fff;
@@ -186,6 +187,7 @@ li.item.placeholder {
     -webkit-border-radius: 50%;
     border-radius: 50%;
     transform: rotate(-22deg);
+    -webkit-transform:; rotate(-22deg);
     top: 3px;
     position: absolute;
     right: 7px;
@@ -261,6 +263,7 @@ li.item.placeholder {
     border-color: white;
     border-style: solid;
     transform-origin: left 57.5px;
+    -webkit-transform-origin: left 57.5px;
 
 }
 .cat .tail-curve .tail-top{
@@ -292,6 +295,7 @@ li.item.placeholder {
     top: 35px;
     width:25px;
     transform: rotate(-20deg);
+    -webkit-transform: rotate(-20deg);
 }
 
 .cat .whiskers.right .middle{
@@ -304,6 +308,7 @@ li.item.placeholder {
     top: 55px;
     width:25px;
     transform: rotate(20deg);
+    -webkit-transform: rotate(20deg);
 }
 
 .cat .whiskers.left .top{
@@ -311,6 +316,7 @@ li.item.placeholder {
     top: 35px;
     width:25px;
     transform: rotate(20deg);
+    -webkit-transform: rotate(20deg);
 }
 
 .cat .whiskers.left .middle{
@@ -323,6 +329,7 @@ li.item.placeholder {
     top: 55px;
     width:25px;
     transform: rotate(-20deg);
+    -webkit-transform: rotate(-20deg);
 }
 
 
@@ -343,12 +350,15 @@ li.item.placeholder {
 @keyframes wag {
     0%{
         transform: rotate(-20deg)
+        -webkit-transform: rotate(-20deg)
     }
     50%{
         transform: rotate(0deg)
+        -webkit-transform: rotate(0deg)
     }
     100%{
         transform: rotate(-20deg)
+       -webkit-transform: rotate(-20deg)
     }
 }
 
@@ -374,6 +384,7 @@ li.item.placeholder {
     left:50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
     background-color: #297FB1;
     border-radius: 50%;
 }
