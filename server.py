@@ -1,14 +1,12 @@
 from __future__ import print_function
 import logging
-from flask import Flask, request, send_file
-from flask import jsonify
+from flask import Flask, request, send_file, jsonify
 import os
 import os.path
 from io import BytesIO
 import tempfile
 from subprocess import Popen, STDOUT
-import shutil
-import errno
+import uuid
 try:
     from subprocess import DEVNULL  # py3k
 except ImportError:
@@ -22,31 +20,27 @@ PORT = 5669
 
 app = Flask(__name__, static_url_path='', static_folder='public')
 
-cmds = ['gs', '-dBATCH', '-dNOPAUSE', '-q', '-sDEVICE=pdfwrite' ]#, '-dPDFSETTINGS=/prepress']
+cmds = ['gs', '-dBATCH', '-dNOPAUSE', '-q', '-sDEVICE=pdfwrite']  # '-dPDFSETTINGS=/prepress']
+
+TMP_DIR = '/tmp/.concat/'
 
 
-def concat(files):
+def concat(file_ids):
     try:
-        output = tempfile.NamedTemporaryFile(suffix='.pdf', delete = False)
+        output = tempfile.NamedTemporaryFile(suffix='.pdf', delete=False)
         args = cmds[:] + ['-sOutputFile=%s' % output.name]
-        uploads = []
 
-        for (k, f) in files.items():
-            t = tempfile.NamedTemporaryFile(suffix='.pdf', delete = False)
-            t.write(f.read())
-            t.flush()
-            uploads.append(f)
-            args.append(t.name)
+        for f in file_ids:
+            args.append(os.path.join(TMP_DIR, f))
 
         Popen(args,
-             stdout=DEVNULL,
-             stderr=STDOUT).wait()
+              stdout=DEVNULL,
+              stderr=STDOUT).wait()
         return output.read()
     except Exception as e:
         raise e
     finally:
         output.close()
-        [u.close() for u in uploads]
 
 
 class InvalidUsage(Exception):
@@ -65,10 +59,26 @@ class InvalidUsage(Exception):
         return rv
 
 
-@app.route('/concat', methods=['POST'])
-def render():
+def upload(file):
+    file_id = uuid.v4()
+    file.save(os.path.join(TMP_DIR, file_id))
+    return file_id
+
+
+@app.route('/upload', methods=['POST'])
+def upload_files():
     try:
-        result = concat(request.files)
+        result = upload(request.file)
+        return {'uuid': result}
+    except Exception as e:
+        print(e)
+        raise InvalidUsage(e.message, status_code=500)
+
+
+@app.route('/concat', methods=['POST'])
+def concat():
+    try:
+        result = concat(request.file_ids)
         return send_file(BytesIO(result),
                          attachment_filename=request.files.keys()[0],
                          as_attachment=True,
