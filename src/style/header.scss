@@ -1,0 +1,12 @@
+nav{
+    background-color: $deep-red;
+    background-image: $header-image;
+    background-repeat: no-repeat;
+    background-position: center center;
+    border: none;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+    height: 75px;
+    @media (min-width: $screen-sm-min) {
+        height: 150px;
+    }
+}

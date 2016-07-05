@@ -1,0 +1,301 @@
+$cat-primary: white;
+$cat-secondary: $light-red;
+.logo{
+
+
+.cat{
+    position:absolute;
+    left:50%;
+     top: 108px;
+
+    transform: translate(-50%, -50%);
+    width:100px;
+    height:150px;
+
+    .torso{
+        width:100px;
+        height:150px;
+        border-radius:0;
+        border-bottom-left-radius: 40px;
+        background-color: $cat-primary;
+            position: absolute;
+    }
+    .torso:before{
+        content: "";
+        width:116px;
+        height:166px;
+        border-radius:0;
+        border-bottom-left-radius: 48px;
+        background-color: $cat-secondary;
+        position: absolute;
+        left: -8px;
+        top: -8px;
+         z-index: -1;
+    }
+}
+
+
+
+.cat .ear{
+    position:absolute;
+    width: 0;
+    height:0;
+    border-style:solid;
+}
+.cat .ear.left{
+    border-width: 20px 0 0 20px;
+    border-color: transparent transparent transparent $cat-primary;
+    top:-20px;
+    left:0px;
+}
+.cat .ear.left:before{
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 40px 0 0 40px;
+    border-color: transparent transparent transparent $cat-secondary ;
+    top: -39px;
+    left: -28px;
+    z-index: -1;
+}
+.cat .ear.right{
+    border-style: solid;
+    border-width: 0 0 20px 20px;
+    border-color: transparent transparent $cat-primary transparent ;
+    top:-20px;
+    right:0px;
+}
+
+.cat .ear.right:before{
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 40px 40px;
+    border-color: transparent transparent $cat-secondary transparent ;
+    top: -20px;
+    left: -32px;
+    z-index: -1;
+}
+
+
+.cat .eye{
+    position:absolute;
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    background:#36465E;
+    z-index:5;
+    width:10px;
+    height:10px;
+    transition: all 0.5s ease;
+}
+.cat .eye.left{
+        top:25px;
+        left:15px;
+}
+.cat .eye.right{
+        top:25px;
+        right:15px;
+}
+
+
+.cat .eye .glint {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 9px solid white;
+    border-radius: 50%;
+    transform: rotate(-22deg);
+    top: 3px;
+    position: absolute;
+    right: 7px;
+    opacity: 0;
+    transition: opacity 0.5 ease-in;
+}
+
+
+.hovering .cat .eye{
+    width: 20px;
+    height:20px;
+}
+.hovering .cat .eye.left{
+    top:20px;
+    left:10px;
+}
+.hovering .cat .eye.right{
+    top:20px;
+    right:10px;
+}
+.hovering .cat .eye .glint{
+    opacity: 1;
+}
+.cat   .nose{
+        position:absolute;
+        left:40px;
+        top: 30px;
+        width:0;
+        height:0;
+
+        border-color: #36465E transparent transparent transparent ;
+        border-width: 10px 10px 0 10px;
+        border-style: solid;
+
+}
+.cat    .mouth{
+        position:absolute;
+        left:25px;
+        width:50px;
+        height:25px;
+        background:#36465E;
+        border-radius: 0px 0px 25px 25px;
+        bottom: 80px;
+
+}
+.cat  .mouth .tongue{
+    position:absolute;
+    left:15px;
+    width:20px;
+    height:35px;
+    border-radius:0 0 20px 20px;
+    background:#FF89D5;
+    animation: tongue-bounce infinite;
+    animation-duration: 1s;
+}
+
+.hovering .cat .mouth .tongue{
+    animation-duration: 0.5s;
+}
+.cat{
+     .tail-curve {
+        position: absolute;
+        bottom: 0;
+        left: 97px;
+        width: 50px;
+        height: 50px;
+        border-radius: 0 0 47px 0;
+        border-width: 0 15px 15px 0;
+        border-color: $cat-primary;
+        border-style: solid;
+        transform-origin: left 57.5px;
+    }
+
+    .tail-curve:before {
+        content: "";
+        position: absolute;
+        bottom: -23px;
+        left: 3px;
+        width: 55px;
+        height: 54px;
+
+        border-radius: 0 0 67px 0;
+        border-width: 0px 31px 33px 0;
+        border-color: $cat-secondary;
+        border-style: solid;
+        transform-origin: left 57.5px;
+        z-index: -1;
+    }
+
+     .tail-curve .tail-top{
+        background-color: $cat-primary;
+        width: 15px;
+        height: 30px;
+        border-radius: 7.5px;
+        position: absolute;
+        right: -15px;
+        top: -20px;
+    }
+     .tail-curve .tail-top:before{
+        content: "";
+        background-color: #c51b24;
+        width: 31px;
+        height: 46px;
+        border-radius: 26.5px;
+        position: absolute;
+        right: -8px;
+        top: -7px;
+        z-index: -1;
+    }
+
+}
+.hovering .cat .tail-curve{
+    animation: wag infinite;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-in-out;
+}
+
+.cat .whiskers * {
+    background:#36465E;
+    height:2px;
+    width:30px;
+    position: absolute;
+}
+
+.cat .whiskers.right .top{
+    left: 85px;
+    top: 35px;
+    width:25px;
+    transform: rotate(-20deg);
+}
+
+.cat .whiskers.right .middle{
+    left:85px;
+    top: 45px;
+}
+
+.cat .whiskers.right .bottom{
+    left: 85px;
+    top: 55px;
+    width:25px;
+    transform: rotate(20deg);
+}
+
+.cat .whiskers.left .top{
+    right: 85px;
+    top: 35px;
+    width:25px;
+    transform: rotate(20deg);
+}
+
+.cat .whiskers.left .middle{
+    right:85px;
+    top: 45px;
+}
+
+.cat .whiskers.left .bottom{
+    right: 85px;
+    top: 55px;
+    width:25px;
+    transform: rotate(-20deg);
+}
+}
+
+
+@keyframes tongue-bounce {
+    0%{
+        height:35px;
+    }
+    50%{
+        height:50px;
+    }
+    100%{
+        height:35px;
+    }
+}
+
+@keyframes wag {
+    0%{
+        transform: rotate(-20deg)
+    }
+    50%{
+        transform: rotate(0deg)
+    }
+    100%{
+        transform: rotate(-20deg)
+    }
+}
+

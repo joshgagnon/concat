@@ -1,6 +1,4 @@
 from __future__ import print_function
-import signal
-import subprocess
 import logging
 from flask import Flask, request, send_file
 from flask import jsonify
@@ -22,7 +20,7 @@ logging.basicConfig()
 PORT = 5669
 
 
-app = Flask(__name__, static_url_path='/static')
+app = Flask(__name__, static_url_path='', static_folder='public')
 
 cmds = ['gs', '-dBATCH', '-dNOPAUSE', '-q', '-sDEVICE=pdfwrite' ]#, '-dPDFSETTINGS=/prepress']
 

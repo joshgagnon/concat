@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>ConCat</title>
-        <link rel="stylesheet" href="/static/styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <meta name="description" content="Concatenate and Deskew PDFs"/>
   </head>
 
   <body>
-  <div id="drop-zone">
-    <h1><span class="big">C</span>ON<span class="big">C</span>AT</h1>
-    <h5>Drop some PDFs here to join em up.</h5>
-    <ul id="list">
-    </ul>
-    <p class="buttons"><button id="upload">Join those PDFs together!</button></p>
-    <div class="cat-scale">
+    <nav class="navbar navbar-default">
+
+    </nav>
+    <div class="title">
+        <h1><span class="big">C</span><span>ON</span><span class="big">C</span><span>AT</span></h1>
+        </div>
+
+    <div class="logo">
     <div class="cat">
+        <div class="bg"></div>
+        <div class="torso"></div>
         <div class="ear right"></div>
         <div class="ear left"></div>
         <div class="eye left">
@@ -36,7 +40,6 @@
         <div class="mouth">
             <div class="tongue"></div>
         </div>
-        <div class="tail"></div>
         <div class="tail-curve">
             <div class="tail-top">
             </div>
@@ -44,20 +47,19 @@
         </div>
     </div>
     </div>
-    </div>
-    <div id="footer">
-        © Joshua Gagnon 2016
-    </div>
-    <div id="loading">
-        <div class="circle-shadow">
-    </div>
-    <div class="circle">
-        <div id="percentage"></div>
-    </div>
+
+
+    <div id="main"></div>
+    <div class="footer">
+    <div class="container">
+        <div class="footer-bar">
+        <a href="https://browser.catalex.nz" class="browser-logo"></a>
+        <div class="catalex-logo"></div>
+        <a href="https://catalex.nz">© 2016 CataLex®</a>
+        </div>
     </div>
     </div>
 
-      <script src="/static/app.js"></script>
 
   </body>
 </html>

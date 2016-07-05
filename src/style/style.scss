@@ -1,0 +1,71 @@
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/variables";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/mixins";
+// Reset and dependencies
+
+
+//$btn-default-border: #A6171D;
+//$input-border:    $btn-default-border;
+//$list-group-border: $btn-default-border;
+
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/normalize";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/grid";
+$icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/glyphicons";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/scaffolding";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/buttons";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/forms";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/input-groups";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/list-group";
+
+
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/utilities";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/responsive-utilities";
+@import "~catalex_shared/sass/catalex-vars";
+
+$header-image:url("~catalex_shared/images/hero-bg.jpg");
+$light-red: rgb(197, 27, 36);
+$label-color: $text-color;
+$input-border-width: 2px;
+$body-bg:  #fff;
+
+@import 'logo';
+@import "header";
+@import "footer";
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+  -webkit-font-smoothing: antialiased;
+}
+
+#drop-zone{
+    position: absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    top:0;
+}
+
+
+
+
+.title{
+    h1{
+        margin-top: 30px;
+        color: $light-red;
+        text-align:center;
+        span{
+            display:inline-block;
+            vertical-align:middle;
+        }
+        .big{
+            font-size:50px;
+        }
+        margin-bottom:0;
+    }
+}
+

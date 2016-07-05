@@ -1,0 +1,51 @@
+{
+  "name": "working-days-api",
+  "version": "0.0.1",
+  "author": "Joshua Gagnon",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joshgagnon/working-days-api.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "run-dev": "node index.js",
+    "run": "NODE_ENV=production node index.js"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.3.14",
+    "bluebird": "^3.1.1",
+    "catalex_shared": "github:joshgagnon/catalex_shared",
+    "clean-webpack-plugin": "^0.1.9",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "isomorphic-fetch": "^2.2.1",
+    "pure-render-decorator": "^0.2.0",
+    "react": "^15.0.0",
+    "react-bootstrap": "^0.28.2",
+    "react-dom": "^15.0.0",
+    "react-redux": "^4.0.6",
+    "redux": "^3.0.5",
+    "redux-thunk": "^1.0.3",
+    "url-loader": "^0.5.7"
+  },
+  "devDependencies": {
+    "babel-core": "^6.4.0",
+    "babel-loader": "^6.2.1",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-react": "^6.3.13",
+    "babel-preset-stage-0": "^6.3.13",
+    "bootstrap": "^3.3.6",
+    "bootstrap-sass": "^3.3.6",
+    "copy-webpack-plugin": "^0.3.3",
+    "css-loader": "^0.23.1",
+    "entry-loader": "^0.1.0",
+    "file-loader": "^0.8.5",
+    "html-webpack-plugin": "^2.21.0",
+    "node-sass": "^3.4.2",
+    "postcss-loader": "^0.9.1",
+    "sass-loader": "^3.1.2",
+    "source-map-loader": "^0.1.5",
+    "style-loader": "^0.13.0",
+    "ts-loader": "^0.8.2",
+    "webpack": "^1.12.10"
+  }
+}
