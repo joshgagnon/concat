@@ -59,12 +59,58 @@
 	var ReactDOM = __webpack_require__(330);
 	var react_redux_1 = __webpack_require__(467);
 	var configureStore_ts_1 = __webpack_require__(489);
-	var DropZone = __webpack_require__(502);
-	__webpack_require__(492);
+	var DropZone = __webpack_require__(492);
+	__webpack_require__(493);
+	var actions_ts_1 = __webpack_require__(522);
 	var store = configureStore_ts_1.default({});
+	;
 	
-	var App = function (_React$Component) {
-	    _inherits(App, _React$Component);
+	var DocumentHandler = function (_React$Component) {
+	    _inherits(DocumentHandler, _React$Component);
+	
+	    function DocumentHandler() {
+	        _classCallCheck(this, DocumentHandler);
+	
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(DocumentHandler).apply(this, arguments));
+	    }
+	
+	    _createClass(DocumentHandler, [{
+	        key: "onDrop",
+	        value: function onDrop(files) {
+	            this.props.addDocuments(files);
+	            /*const data = new FormData();
+	             files.map(f => {
+	                data.append('file[]', f);
+	            });
+	             axios.post('/upload', data,
+	                {
+	                    progress: (progressEvent) => {
+	                        console.log(progressEvent)
+	                        // upload loading percentage
+	                        const percentCompleted = progressEvent.loaded / progressEvent.total;
+	                     }
+	                })*/
+	        }
+	    }, {
+	        key: "render",
+	        value: function render() {
+	            return React.createElement(DropZone, { ref: "dropzone", onDrop: this.onDrop, disableClick: true, disablePreview: true, accept: 'application/pdf' }, React.createElement("div", null), React.createElement("div", { className: "document-list" }));
+	        }
+	    }]);
+	
+	    return DocumentHandler;
+	}(React.Component);
+	
+	var DocumentHandlerConnected = react_redux_1.connect(function (state) {
+	    return { documents: state.documents };
+	}, {
+	    addDocuments: actions_ts_1.addDocuments,
+	    updateDocuments: actions_ts_1.updateDocuments,
+	    submitDocuments: actions_ts_1.submitDocuments
+	})(DocumentHandler);
+	
+	var App = function (_React$Component2) {
+	    _inherits(App, _React$Component2);
 	
 	    function App() {
 	        _classCallCheck(this, App);
@@ -73,12 +119,9 @@
 	    }
 	
 	    _createClass(App, [{
-	        key: "onDrop",
-	        value: function onDrop(event) {}
-	    }, {
 	        key: "render",
 	        value: function render() {
-	            return React.createElement(DropZone, { ref: "dropzone", onDrop: this.onDrop, disableClick: true, disablePreview: true, accept: 'application/pdf' }, React.createElement("div", null, "Hi"));
+	            return React.createElement(DocumentHandlerConnected, null);
 	        }
 	    }]);
 	
@@ -30474,7 +30517,7 @@
 	"use strict";
 	
 	var redux_1 = __webpack_require__(474);
-	var filelist = function filelist() {
+	var documents = function documents() {
 	    var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 	    var action = arguments[1];
 	
@@ -30482,28 +30525,13 @@
 	    return state;
 	};
 	var rootReducer = redux_1.combineReducers({
-	    filelist: filelist
+	    documents: documents
 	});
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = rootReducer;
 
 /***/ },
 /* 492 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 493 */,
-/* 494 */,
-/* 495 */,
-/* 496 */,
-/* 497 */,
-/* 498 */,
-/* 499 */,
-/* 500 */,
-/* 501 */,
-/* 502 */
 /***/ function(module, exports, __webpack_require__) {
 
 	(function webpackUniversalModuleDefinition(root, factory) {
@@ -30893,6 +30921,66 @@
 	});
 	;
 
+
+/***/ },
+/* 493 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 494 */,
+/* 495 */,
+/* 496 */,
+/* 497 */,
+/* 498 */,
+/* 499 */,
+/* 500 */,
+/* 501 */,
+/* 502 */,
+/* 503 */,
+/* 504 */,
+/* 505 */,
+/* 506 */,
+/* 507 */,
+/* 508 */,
+/* 509 */,
+/* 510 */,
+/* 511 */,
+/* 512 */,
+/* 513 */,
+/* 514 */,
+/* 515 */,
+/* 516 */,
+/* 517 */,
+/* 518 */,
+/* 519 */,
+/* 520 */,
+/* 521 */,
+/* 522 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	var actionCreator = function actionCreator(type) {
+	  return Object.assign(function (payload) {
+	    return { type: type, payload: payload };
+	  }, { type: type });
+	};
+	exports.isType = function (action, actionCreator) {
+	  return action.type === actionCreator.type;
+	};
+	//Example action creator:
+	/*
+	export interface Response {
+	  status: boolean
+	  response: Object
+	}
+	
+	*/
+	exports.addDocuments = actionCreator('ADD_DOCUMENTS');
+	exports.updateDocuments = actionCreator('UPDATE_DOCUMENTS');
+	exports.submitDocuments = actionCreator('SUBMIT_DOCUMENTS');
 
 /***/ }
 /******/ ]);

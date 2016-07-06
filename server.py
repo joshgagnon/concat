@@ -1,4 +1,5 @@
 from __future__ import print_function
+import errno
 import logging
 from flask import Flask, request, send_file, jsonify
 import os
@@ -59,17 +60,19 @@ class InvalidUsage(Exception):
         return rv
 
 
-def upload(file):
-    file_id = uuid.v4()
-    file.save(os.path.join(TMP_DIR, file_id))
-    return file_id
+def upload(files):
+    results = {}
+    for f in files:
+        file_id = str(uuid.uuid4())
+        results[f.filename] = file_id
+        f.save(os.path.join(TMP_DIR, file_id))
+    return results
 
 
 @app.route('/upload', methods=['POST'])
 def upload_files():
     try:
-        result = upload(request.file)
-        return {'uuid': result}
+        return jsonify(upload(request.files.getlist("file[]")))
     except Exception as e:
         print(e)
         raise InvalidUsage(e.message, status_code=500)
@@ -102,4 +105,9 @@ def handle_invalid_usage(error):
 
 if __name__ == '__main__':
     print('Running on %d' % PORT)
+    try:
+        os.makedirs(TMP_DIR)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise
     app.run(port=PORT, debug=True)

@@ -22,9 +22,10 @@ export interface Response {
   response: Object
 }
 
-
-export const updateResult = actionCreator<string>('UPDATE_RESULT')
-
-export const updateHolidays = actionCreator<string>('UPDATE_HOLIDAYS')
-
 */
+
+export const addDocuments = actionCreator<string>('ADD_DOCUMENTS');
+export const updateDocuments = actionCreator<string>('UPDATE_DOCUMENTS');
+export const submitDocuments = actionCreator<string>('SUBMIT_DOCUMENTS');
+
+

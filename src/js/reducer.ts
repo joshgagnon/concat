@@ -3,14 +3,14 @@ import { Action } from './actions.ts'
 
 
 
-const filelist = (state = {}, action) => {
+const documents = (state = {}, action) => {
     switch(action.type){
     }
     return state;
 }
 
 const rootReducer = combineReducers({
-    filelist
+    documents
 });
 
 export default rootReducer;
