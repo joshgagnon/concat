@@ -7,34 +7,79 @@ import configureStore from './configureStore.ts';
 import * as DropZone from 'react-dropzone';
 import '../style/style.scss';
 import * as axios from 'axios';
-import * as PDF from 'react-pdf-component';
-import { addDocuments, updateDocuments, submitDocuments} from './actions.ts'
+import PDF from './pdf.tsx';
+import { addDocuments, updateDocument, submitDocuments} from './actions.ts';
+
 const store = configureStore({});
 
 type Document = {
     filename: string;
-    uuid: string;
-    data: ArrayBuffer;
+    uuid?: string;
+    file: File
     uploaded?: number;
+    data: ArrayBuffer;
+
 };
 
 
-type Documents = {
-    order: Array<number>
-    list: Array<Document>
-};
-
-
-interface IDocumentHandler {
+interface DocumentHandlerProps {
     addDocuments(files: any);
-    updateDocuments(files: any);
+    updateDocument(options: Object);
     submitDocuments(options: Object);
     documents: any;
 };
 
-class DocumentHandler extends React.Component<IDocumentHandler, {}> {
+
+interface IDocumentHandler {
+    onDrop(files: any);
+};
+
+interface FileReaderEventTarget extends EventTarget {
+    result:string
+}
+
+interface FileReaderEvent extends Event {
+    target: FileReaderEventTarget;
+    getMessage():string;
+}
+
+
+class DocumentView extends React.Component<{document: Document, updateData: Function}, {}> {
+    componentWillReceiveProps(props){
+        this.loadData(props);
+    }
+    componentWillMount(){
+        this.loadData(this.props);
+    }
+    loadData(props){
+        if(!props.document.data){
+            const reader = new FileReader();
+            reader.onload = (event:FileReaderEvent) => {
+                this.props.updateData(event.target.result)
+            };
+            reader.readAsArrayBuffer(props.document.file);
+        }
+    }
+
+    render() {
+        console.log(PDF)
+        return <div>
+            { this.props.document.data &&  <PDF  data={this.props.document.data } /> }
+        </div>
+    }
+}
+
+class DocumentHandler extends React.Component<DocumentHandlerProps, {}> implements IDocumentHandler {
+    constructor(props){
+        super(props);
+        this.onDrop = this.onDrop.bind(this);
+    }
     onDrop(files) {
-        this.props.addDocuments(files);
+        this.props.addDocuments(files.map(f => ({
+            filename: f.name,
+            file: f
+        })));
+
         /*const data = new FormData();
 
         files.map(f => {
@@ -53,12 +98,17 @@ class DocumentHandler extends React.Component<IDocumentHandler, {}> {
     }
 
     render() {
+        console.log(this.props)
         return <DropZone ref="dropzone" onDrop={this.onDrop} disableClick={true} disablePreview={true} accept={'application/pdf'}>
             <div>
 
         </div>
         <div className="document-list">
-
+            { this.props.documents.filelist.map((f, i) => {
+                return <DocumentView document={f} key={i} updateData={(data) => {
+                    this.props.updateDocument({id: f.id, data:data});
+                }}/>
+            })}
         </div>
         </DropZone>
     }
@@ -67,7 +117,7 @@ class DocumentHandler extends React.Component<IDocumentHandler, {}> {
 
 const DocumentHandlerConnected = connect(state => ({documents: state.documents}), {
     addDocuments: addDocuments,
-    updateDocuments: updateDocuments,
+    updateDocument: updateDocument,
     submitDocuments: submitDocuments
 })(DocumentHandler);
 

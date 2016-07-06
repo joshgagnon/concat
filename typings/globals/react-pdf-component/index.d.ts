@@ -1,15 +1,12 @@
-declare namespace ReactPDF {
-    import React = __React;
+declare module "react-pdf-component" {
+    import * as React from 'react';
+
     interface ReactPDFProps {
         data?: ArrayBuffer
     }
 
-    export class PDF extends React.Component<ReactPDFProps, {}> {
+    class PDF extends React.Component<ReactPDFProps, {}>{
+
     }
-
-}
-
-declare module "react-pdf-component" {
-    const PDF: typeof ReactPDF.PDF;
-    export = PDF;
+    export default PDF;
 }
