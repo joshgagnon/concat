@@ -16,6 +16,7 @@ $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
 @import "~bootstrap-sass/assets/stylesheets/bootstrap/forms";
 @import "~bootstrap-sass/assets/stylesheets/bootstrap/input-groups";
 @import "~bootstrap-sass/assets/stylesheets/bootstrap/list-group";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/progress-bars";
 
 
 @import "~bootstrap-sass/assets/stylesheets/bootstrap/utilities";
@@ -42,14 +43,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-#drop-zone{
-    position: absolute;
-    left:0;
-    right:0;
-    bottom:0;
-    top:0;
-}
-
 
 
 
@@ -67,5 +60,46 @@ body {
         }
         margin-bottom:0;
     }
+}
+
+.document{
+    float:left;
+    position: relative;
+    width: 170px;
+    padding: 10px;
+    margin: 30px;
+    .filename{
+        text-align:center;
+    }
+    .image{
+        width: 150px;
+        height: 200px;
+        background-color:#efefef;
+    }
+    .progress{
+        position:absolute;
+        bottom:50%;
+        left:4px;
+        right:4px;
+        margin-bottom: 0;
+        height: 16px;
+    }
+.progress-leave {
+  opacity: 1;
+}
+
+.progress-leave.progress-leave-active {
+  opacity: 0.01;
+  transition: opacity 500ms ease-in;
+}
+
+}
+
+.dropzone{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 

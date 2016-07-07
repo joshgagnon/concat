@@ -7,18 +7,19 @@ import configureStore from './configureStore.ts';
 import * as DropZone from 'react-dropzone';
 import '../style/style.scss';
 import * as axios from 'axios';
-import PDF from './pdf.tsx';
 import { addDocuments, updateDocument, submitDocuments} from './actions.ts';
+import Header from './header.tsx';
+import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 const store = configureStore({});
 
 type Document = {
     filename: string;
     uuid?: string;
-    file: File
-    uploaded?: number;
+    file: File;
+    status: string;
     data: ArrayBuffer;
-
+    progress?: number;
 };
 
 
@@ -44,14 +45,15 @@ interface FileReaderEvent extends Event {
 }
 
 
-class DocumentView extends React.Component<{document: Document, updateData: Function}, {}> {
+class DocumentView extends React.Component<{document: Document, updateDocument: Function}, {}> {
+
     componentWillReceiveProps(props){
-        this.loadData(props);
+        this.uploadData(props);
     }
     componentWillMount(){
-        this.loadData(this.props);
+        this.uploadData(this.props);
     }
-    loadData(props){
+    /*loadData(props){
         if(!props.document.data){
             const reader = new FileReader();
             reader.onload = (event:FileReaderEvent) => {
@@ -59,13 +61,47 @@ class DocumentView extends React.Component<{document: Document, updateData: Func
             };
             reader.readAsArrayBuffer(props.document.file);
         }
+    }*/
+
+    uploadData(props){
+        if(!props.document.status){
+            props.updateDocument({status: 'posting', progress: 0});
+            const data = new FormData();
+            data.append('file[]', props.document.file);
+            axios.post('/upload', data,
+                {
+                    progress: (progressEvent) => {
+                        console.log(progressEvent)
+                        // upload loading percentage
+                        const percentCompleted = progressEvent.loaded / progressEvent.total;
+                        props.updateDocument({progress: percentCompleted});
+                    }
+                })
+            .then((response) => {
+
+                props.updateDocument({status: 'complete', uuid: response.data[props.document.filename]});
+            })
+        }
     }
 
     render() {
-        console.log(PDF)
-        return <div>
-            { this.props.document.data &&  <PDF  data={this.props.document.data } /> }
-        </div>
+        console.log(this.props.document.status)
+        return <div className="document">
+                <div className="image">
+                </div>
+                <div className="filename">
+                    { this.props.document.filename }
+                </div>
+                <ReactCSSTransitionGroup transitionName="progress" transitionEnterTimeout={300} transitionLeaveTimeout={500}>
+                { this.props.document.status === 'posting'  &&
+
+                    <div className="progress" key="progress">
+                      <div className="progress-bar progress-bar-striped active" style={{width: `${this.props.document.progress*100}%`}}>
+                      </div>
+                    </div>
+                   }
+                     </ReactCSSTransitionGroup>
+            </div>
     }
 }
 
@@ -98,19 +134,24 @@ class DocumentHandler extends React.Component<DocumentHandlerProps, {}> implemen
     }
 
     render() {
-        console.log(this.props)
-        return <DropZone ref="dropzone" onDrop={this.onDrop} disableClick={true} disablePreview={true} accept={'application/pdf'}>
-            <div>
+        return <div>
+        <DropZone className="dropzone" ref="dropzone" onDrop={this.onDrop} disableClick={true} disablePreview={true} accept={'application/pdf'} style={{}}>
+           </DropZone>
+        <Header />
 
-        </div>
-        <div className="document-list">
+        <div className="container">
+            <div className="document-list">
             { this.props.documents.filelist.map((f, i) => {
-                return <DocumentView document={f} key={i} updateData={(data) => {
-                    this.props.updateDocument({id: f.id, data:data});
-                }}/>
-            })}
+                return <DocumentView document={f} key={i} updateDocument={(data) => {
+                    this.props.updateDocument(Object.assign({id: f.id}, data));
+                    }}/>
+                })}
+            </div>
         </div>
-        </DropZone>
+
+             </div>
+
+
     }
 }
 

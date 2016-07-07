@@ -12,7 +12,6 @@ module.exports = {
         app: "./src/js/app.tsx",
     },
     cache: true,
-    target: "web",
     output: {
         path:  path.resolve(__dirname, 'public'),
         //filename: DEV ? "[name].js" : "[name].[hash].js"
@@ -78,7 +77,7 @@ module.exports = {
 
         new HtmlWebpackPlugin({
             title: 'ConCat - CataLex®',
-            hash: true,
+            //hash: true,
             template: 'src/static/index.ejs',
             inject: 'body'
           })
