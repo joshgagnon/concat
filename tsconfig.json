@@ -5,6 +5,7 @@
     "jsx": "react",
     "sourceMap": true,
     "outDir": "public",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "experimentalDecorators": true
   }
 }

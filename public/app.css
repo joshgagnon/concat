@@ -3519,6 +3519,10 @@ nav {
     nav {
       height: 150px; } }
 
+.explanation {
+  color: #a6171d;
+  text-align: center; }
+
 .footer {
   position: absolute;
   bottom: 0;
@@ -3589,7 +3593,10 @@ body {
   position: relative;
   width: 170px;
   padding: 10px;
-  margin: 30px; }
+  margin: 30px;
+  min-height: 150px;
+  cursor: move;
+  background-color: white; }
   .document .filename {
     text-align: center; }
   .document .image {

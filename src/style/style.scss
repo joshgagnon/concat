@@ -68,6 +68,9 @@ body {
     width: 170px;
     padding: 10px;
     margin: 30px;
+    min-height:150px;
+    cursor: move;
+    background-color: white;
     .filename{
         text-align:center;
     }
@@ -84,14 +87,14 @@ body {
         margin-bottom: 0;
         height: 16px;
     }
-.progress-leave {
-  opacity: 1;
-}
+    .progress-leave {
+      opacity: 1;
+    }
 
-.progress-leave.progress-leave-active {
-  opacity: 0.01;
-  transition: opacity 500ms ease-in;
-}
+    .progress-leave.progress-leave-active {
+      opacity: 0.01;
+      transition: opacity 500ms ease-in;
+    }
 
 }
 

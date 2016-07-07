@@ -7,9 +7,11 @@ import configureStore from './configureStore.ts';
 import * as DropZone from 'react-dropzone';
 import '../style/style.scss';
 import * as axios from 'axios';
-import { addDocuments, updateDocument, submitDocuments} from './actions.ts';
+import { addDocuments, updateDocument, submitDocuments, moveDocument } from './actions.ts';
 import Header from './header.tsx';
 import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { DragSource, DropTarget, DragDropContext } from 'react-dnd';
+import *  as HTML5Backend from 'react-dnd-html5-backend';
 
 const store = configureStore({});
 
@@ -27,9 +29,26 @@ interface DocumentHandlerProps {
     addDocuments(files: any);
     updateDocument(options: Object);
     submitDocuments(options: Object);
+    moveDocument(options: Object);
     documents: any;
 };
 
+interface DocumentListProps {
+    updateDocument(options: Object);
+    moveDocument(options: Object);
+    documents: any;
+};
+
+
+interface DocumentViewProps {
+    document: Document;
+    updateDocument: Function;
+    isDragging: boolean;
+    connectDragSource: Function;
+    connectDropTarget: Function;
+    index: number;
+
+}
 
 interface IDocumentHandler {
     onDrop(files: any);
@@ -44,9 +63,47 @@ interface FileReaderEvent extends Event {
     getMessage():string;
 }
 
+const documentDragSource = {
+  beginDrag(props) {
+    return {
+      id: props.id,
+      index: props.index
+    };
+  }
+};
 
-class DocumentView extends React.Component<{document: Document, updateDocument: Function}, {}> {
+const documentDragTarget = {
+  hover(props, monitor, component) {
+    const dragIndex = monitor.getItem().index;
+    const hoverIndex = props.index;
+    // Don't replace items with themselves
+    if (dragIndex === hoverIndex) {
+      return;
+    }
 
+    // Determine rectangle on screen
+    const hoverBoundingRect = ReactDOM.findDOMNode(component).getBoundingClientRect();
+
+    // Get vertical middle
+    const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+
+    // Determine mouse position
+    const clientOffset = monitor.getClientOffset();
+
+    // Get pixels to the top
+    const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+    props.moveDocument(dragIndex, hoverIndex);
+
+    // Note: we're mutating the monitor item here!
+    // Generally it's better to avoid mutations,
+    // but it's good here for the sake of performance
+    // to avoid expensive index searches.
+    monitor.getItem().index = hoverIndex;
+  }
+};
+
+
+class DocumentView extends React.Component<DocumentViewProps, {}>  {
     componentWillReceiveProps(props){
         this.uploadData(props);
     }
@@ -85,8 +142,10 @@ class DocumentView extends React.Component<{document: Document, updateDocument: 
     }
 
     render() {
-        console.log(this.props.document.status)
-        return <div className="document">
+        const { isDragging, connectDragSource, connectDropTarget } = this.props;
+        const opacity = isDragging ? 0 : 1;
+
+        return connectDragSource(connectDropTarget(<div className="document" style={{opacity}}>
                 <div className="image">
                 </div>
                 <div className="filename">
@@ -101,71 +160,92 @@ class DocumentView extends React.Component<{document: Document, updateDocument: 
                     </div>
                    }
                      </ReactCSSTransitionGroup>
+            </div>));
+    }
+}
+
+const DraggableDocumentView = DragSource('DOCUMENTS', documentDragSource, (connect, monitor) => ({
+  connectDragSource: connect.dragSource(),
+  isDragging: monitor.isDragging()
+}))(DocumentView);
+
+const DraggableDroppableDocumentView = DropTarget('DOCUMENTS', documentDragTarget, connect => ({
+  connectDropTarget: connect.dropTarget()
+}))(DraggableDocumentView);
+
+
+class DocumentList extends React.Component<DocumentListProps, {}> {
+    constructor(props){
+        super(props);
+        this.moveDocument = this.moveDocument.bind(this);
+    }
+
+    moveDocument(dragIndex, hoverIndex){
+        const dragDocument = this.props.documents.filelist[dragIndex];
+        this.props.moveDocument({sourceIndex: dragIndex, destIndex: hoverIndex});
+    }
+
+    render() {
+         return <div className="document-list">
+            { this.props.documents.filelist.map((f, i) => {
+                return <DraggableDroppableDocumentView
+                    document={f}
+                    key={f.id}
+                    index={i}
+                    updateDocument={(data) => {
+                        this.props.updateDocument(Object.assign({id: f.id}, data));
+                    }}
+                    moveDocument={this.moveDocument}/>
+                })}
             </div>
     }
 }
+
+
 
 class DocumentHandler extends React.Component<DocumentHandlerProps, {}> implements IDocumentHandler {
     constructor(props){
         super(props);
         this.onDrop = this.onDrop.bind(this);
     }
+
     onDrop(files) {
         this.props.addDocuments(files.map(f => ({
             filename: f.name,
             file: f
         })));
-
-        /*const data = new FormData();
-
-        files.map(f => {
-            data.append('file[]', f);
-        });
-
-        axios.post('/upload', data,
-            {
-                progress: (progressEvent) => {
-                    console.log(progressEvent)
-                    // upload loading percentage
-                    const percentCompleted = progressEvent.loaded / progressEvent.total;
-
-                }
-            })*/
     }
 
     render() {
         return <div>
         <DropZone className="dropzone" ref="dropzone" onDrop={this.onDrop} disableClick={true} disablePreview={true} accept={'application/pdf'} style={{}}>
-           </DropZone>
+        </DropZone>
         <Header />
-
-        <div className="container">
-            <div className="document-list">
-            { this.props.documents.filelist.map((f, i) => {
-                return <DocumentView document={f} key={i} updateDocument={(data) => {
-                    this.props.updateDocument(Object.assign({id: f.id}, data));
-                    }}/>
-                })}
+            <div className="container">
+                <DocumentList
+                    updateDocument={this.props.updateDocument}
+                    documents={this.props.documents}
+                    moveDocument={this.props.moveDocument} />
             </div>
         </div>
-
-             </div>
 
 
     }
 }
 
-
 const DocumentHandlerConnected = connect(state => ({documents: state.documents}), {
     addDocuments: addDocuments,
     updateDocument: updateDocument,
-    submitDocuments: submitDocuments
+    submitDocuments: submitDocuments,
+    moveDocument: moveDocument
 })(DocumentHandler);
 
 
+const DragContextDocumentHandlerConnected = DragDropContext(HTML5Backend)(DocumentHandlerConnected)
+
 class App extends React.Component<{}, {}> {
     render() {
-        return <DocumentHandlerConnected />
+        return <DragContextDocumentHandlerConnected />
     }
 }
 
