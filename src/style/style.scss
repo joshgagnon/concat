@@ -1,11 +1,21 @@
 @import "~bootstrap-sass/assets/stylesheets/bootstrap/variables";
 @import "~bootstrap-sass/assets/stylesheets/bootstrap/mixins";
 // Reset and dependencies
-
+@import "~catalex_shared/sass/catalex-vars";
 
 //$btn-default-border: #A6171D;
 //$input-border:    $btn-default-border;
 //$list-group-border: $btn-default-border;
+$header-image:url("~catalex_shared/images/hero-bg.jpg");
+$light-red: rgb(197, 27, 36);
+$label-color: $text-color;
+$input-border-width: 2px;
+$body-bg:  #fff;
+$font-size-base: 17px;
+$btn-primary-color: white;
+$btn-primary-bg: $light-red;
+$btn-primary-border: $light-red;
+
 
 @import "~bootstrap-sass/assets/stylesheets/bootstrap/normalize";
 @import "~bootstrap-sass/assets/stylesheets/bootstrap/grid";
@@ -21,13 +31,8 @@ $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
 
 @import "~bootstrap-sass/assets/stylesheets/bootstrap/utilities";
 @import "~bootstrap-sass/assets/stylesheets/bootstrap/responsive-utilities";
-@import "~catalex_shared/sass/catalex-vars";
 
-$header-image:url("~catalex_shared/images/hero-bg.jpg");
-$light-red: rgb(197, 27, 36);
-$label-color: $text-color;
-$input-border-width: 2px;
-$body-bg:  #fff;
+
 
 @import 'logo';
 @import "header";
@@ -37,13 +42,12 @@ html {
   position: relative;
   min-height: 100%;
 }
-body {
+
+.body {
   /* Margin bottom by footer height */
   margin-bottom: 60px;
   -webkit-font-smoothing: antialiased;
 }
-
-
 
 
 .title{
@@ -120,14 +124,33 @@ body {
       transition: opacity 500ms ease-in;
     }
 
+    .remove{
+         position: absolute;
+        right: 10px;
+        background-color: #666;
+        top: 10px;
+        border: none;
+        border-radius: 8px;
+        width: 29px;
+        cursor: pointer;
+        color: white;
+        display:none;
+    }
+    &:hover .remove{
+        display:block;
+    }
+
 }
 
+
 .dropzone{
+    .push-catch{
+    height: 100%;
     position: absolute;
-    top: 0;
     bottom: 0;
-    left: 0;
-    right: 0;
+    width: 100%;
+    z-index: -1;
+    }
 }
 
 

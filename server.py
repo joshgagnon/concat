@@ -16,7 +16,7 @@ except ImportError:
 
 logging.basicConfig()
 
-PORT = 5669
+PORT = 5667
 
 
 app = Flask(__name__, static_url_path='', static_folder='public')
@@ -30,14 +30,14 @@ thumb_cmds = ['convert', '-thumbnail', '150x', '-background', 'white', '-alpha',
 TMP_DIR = '/tmp/.concat/'
 
 
-def concat(file_ids):
+def concat_file_ids(file_ids):
     try:
+        print(file_ids)
         output = tempfile.NamedTemporaryFile(suffix='.pdf', delete=False)
         args = concat_cmds[:] + ['-sOutputFile=%s' % output.name]
 
         for f in file_ids:
-            args.append(os.path.join(TMP_DIR, f))
-
+            args.append(os.path.join(TMP_DIR, f)+'.pdf')
         Popen(args,
               stdout=DEVNULL,
               stderr=STDOUT).wait()
@@ -46,6 +46,8 @@ def concat(file_ids):
         raise e
     finally:
         output.close()
+
+
 
 def thumb(file_id):
     try:
@@ -107,12 +109,12 @@ def thumbview(uuid):
         raise InvalidUsage(e.message, status_code=500)
 
 
-@app.route('/concat', methods=['POST'])
+@app.route('/concat', methods=['GET'])
 def concat():
     try:
-        result = concat(request.file_ids)
+        result = concat_file_ids(request.args.getlist("file_ids[]"))
         return send_file(BytesIO(result),
-                         attachment_filename=request.files.keys()[0],
+                         attachment_filename=request.args.get('filename', 'concat-merge.pdf'),
                          as_attachment=True,
                          mimetype='application/pdf')
     except Exception as e:
@@ -139,4 +141,4 @@ if __name__ == '__main__':
     except OSError as exception:
         if exception.errno != errno.EEXIST:
             raise
-    app.run(port=PORT, debug=True)
+    app.run(port=PORT, debug=True, host='0.0.0.0')

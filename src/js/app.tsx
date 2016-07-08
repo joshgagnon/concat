@@ -6,11 +6,34 @@ import { Store, createStore } from 'redux';
 import configureStore from './configureStore.ts';
 import '../style/style.scss';
 import * as axios from 'axios';
-import { addDocuments, updateDocument, submitDocuments, moveDocument } from './actions.ts';
+import { addDocuments, updateDocument, submitDocuments, moveDocument, removeDocument } from './actions.ts';
 import Header from './header.tsx';
+import Footer from './footer.tsx';
 import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { DragSource, DropTarget, DragDropContext } from 'react-dnd';
 import *  as HTML5Backend from 'react-dnd-html5-backend';
+
+
+const serialize = function(obj, prefix?) {
+  var str = [];
+  for(var p in obj) {
+    if (obj.hasOwnProperty(p)) {
+      var k = prefix ? prefix + "[]" : p, v = obj[p];
+      str.push(typeof v == "object" ?
+        serialize(v, k) :
+        k + "=" + encodeURIComponent(v));
+    }
+  }
+  return str.join("&");
+}
+
+function eachSeries(arr: Array<any>, iteratorFn: Function) {
+    return arr.reduce(function(p, item) {
+        return p.then(function() {
+            return iteratorFn(item);
+        });
+    }, Promise.resolve());
+}
 
 const store = configureStore({});
 
@@ -29,10 +52,12 @@ interface DocumentHandlerProps {
     updateDocument(options: Object);
     submitDocuments(options: Object);
     moveDocument(options: Object);
+    removeDocument(options: Object);
     documents: any;
 };
 
 interface DocumentListProps {
+    removeDocument(options: Object);
     updateDocument(options: Object);
     moveDocument(options: Object);
     documents: any;
@@ -42,6 +67,7 @@ interface DocumentListProps {
 interface DocumentViewProps {
     document: Document;
     updateDocument: Function;
+    removeDocument: Function;
     isDragging: boolean;
     connectDragSource: Function;
     connectDropTarget: Function;
@@ -104,12 +130,7 @@ const documentDragTarget = {
 
 
 class DocumentView extends React.Component<DocumentViewProps, {}>  {
-    componentWillReceiveProps(props){
-        this.uploadData(props);
-    }
-    componentWillMount(){
-        this.uploadData(this.props);
-    }
+
     /*loadData(props){
         if(!props.document.data){
             const reader = new FileReader();
@@ -120,31 +141,12 @@ class DocumentView extends React.Component<DocumentViewProps, {}>  {
         }
     }*/
 
-    uploadData(props){
-        if(!props.document.status){
-            props.updateDocument({status: 'posting', progress: 0});
-            const data = new FormData();
-            data.append('file[]', props.document.file);
-            axios.post('/upload', data,
-                {
-                    progress: (progressEvent) => {
-                        // upload loading percentage
-                        const percentCompleted = progressEvent.loaded / progressEvent.total;
-                        props.updateDocument({progress: percentCompleted});
-                    }
-                })
-            .then((response) => {
-
-                props.updateDocument({status: 'complete', uuid: response.data[props.document.filename]});
-            })
-        }
-    }
-
     render() {
         const { isDragging, connectDragSource, connectDropTarget } = this.props;
         const opacity = isDragging ? 0 : 1;
 
         return connectDragSource(connectDropTarget(<div className="document" style={{opacity}}>
+                <button className="remove" onClick={this.props.removeDocument}>✖</button>
                 <div className="image">
                     { this.props.document.uuid && <img src={`/thumb/${this.props.document.uuid}`} /> }
                 </div>
@@ -184,6 +186,36 @@ class DocumentList extends React.Component<DocumentListProps, {}> {
         const dragDocument = this.props.documents.filelist[dragIndex];
         this.props.moveDocument({sourceIndex: dragIndex, destIndex: hoverIndex});
     }
+    componentWillReceiveProps(props){
+        this.uploadData(props);
+    }
+    componentWillMount(){
+        this.uploadData(this.props);
+    }
+    uploadData(props){
+        const unUploaded = props.documents.filelist.filter(d => !d.status);
+
+        unUploaded.map(doc => {
+            props.updateDocument({id: doc.id, status: 'posting', progress: 0});
+        });
+        eachSeries(unUploaded, (doc) => {
+
+            const data = new FormData();
+            data.append('file[]', doc.file);
+            return axios.post('/upload', data,
+                {
+                    progress: (progressEvent) => {
+                        // upload loading percentage
+                        const percentCompleted = progressEvent.loaded / progressEvent.total;
+                        props.updateDocument({id: doc.id, progress: percentCompleted});
+                    }
+                })
+            .then((response) => {
+                props.updateDocument({id: doc.id, status: 'complete', uuid: response.data[doc.filename]});
+            })
+        });
+    }
+
 
     render() {
          return <div className="document-list">
@@ -195,6 +227,7 @@ class DocumentList extends React.Component<DocumentListProps, {}> {
                     updateDocument={(data) => {
                         this.props.updateDocument(Object.assign({id: f.id}, data));
                     }}
+                    removeDocument={() => this.props.removeDocument({id: f.id})}
                     moveDocument={this.moveDocument}/>
                 })}
             </div>
@@ -204,8 +237,10 @@ class DocumentList extends React.Component<DocumentListProps, {}> {
 class FileDropZone extends React.Component<{connectDropTarget: Function, isOver: boolean, canDrop: boolean}, {}> {
     render() {
         const { connectDropTarget, isOver, canDrop } = this.props;
-        return connectDropTarget(
-            <div className="dropzone"></div>
+        return connectDropTarget(<div className="dropzone">
+                                 { this.props.children }
+                                 <div className="push-catch"></div>
+                                </div>
         );
     }
 }
@@ -227,6 +262,7 @@ class DocumentHandler extends React.Component<DocumentHandlerProps, {}> implemen
     constructor(props){
         super(props);
         this.onDrop = this.onDrop.bind(this);
+        //this.submit = this.submit.bind(this);
     }
 
     onDrop(files) {
@@ -236,23 +272,41 @@ class DocumentHandler extends React.Component<DocumentHandlerProps, {}> implemen
         })));
     }
 
+    /*submit() {
+        axios.get('/concat', {file_ids: },
+            {
+                progress: (progressEvent) => {
+                    // upload loading percentage
+                    const percentCompleted = progressEvent.loaded / progressEvent.total;
+                    props.updateDocument({progress: percentCompleted});
+                }
+            })
+        .then((response) => {
+            props.updateDocument({status: 'complete', uuid: response.data[props.document.filename]});
+        })
+    }*/
+
     render() {
-        const loaded = !!this.props.documents.filelist.length && this.props.documents.filelist.every(f => f.status === 'complete') || true;
-        return <div>
-            <ConnectedFileDropZone onDrop={this.onDrop} />
+        const loaded = !!this.props.documents.filelist.length && this.props.documents.filelist.every(f => f.status === 'complete');
+
+
+        const url = '/concat?' + serialize({file_ids: this.props.documents.filelist.map(f => f.uuid)});
+        return  <ConnectedFileDropZone onDrop={this.onDrop}>
+            <div className="body">
             <Header />
             <div className="container">
                 <DocumentList
                     updateDocument={this.props.updateDocument}
                     documents={this.props.documents}
-                    moveDocument={this.props.moveDocument} />
+                    moveDocument={this.props.moveDocument}
+                    removeDocument={this.props.removeDocument}
+                     />
                 { loaded && <div className="button-bar">
-                    <button className="btn btn-primary">Merge</button>
-                </div>}
+                <a href={url} className="btn btn-primary">Merge</a></div> }
             </div>
+            <Footer />
             </div>
-
-
+            </ConnectedFileDropZone>
     }
 }
 
@@ -260,6 +314,7 @@ const DocumentHandlerConnected = connect(state => ({documents: state.documents})
     addDocuments: addDocuments,
     updateDocument: updateDocument,
     submitDocuments: submitDocuments,
+    removeDocument: removeDocument,
     moveDocument: moveDocument
 })(DocumentHandler);
 

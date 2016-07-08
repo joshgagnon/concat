@@ -5,7 +5,7 @@ import { Action } from './actions.ts'
 let index = 0;
 
 const documents = (state = {filelist: []}, action) => {
-    let filelist;
+    let filelist, i;
     switch(action.type){
         case "ADD_DOCUMENTS":
             return Object.assign({}, state, {filelist: state.filelist.concat(action.payload.map(f => {
@@ -18,7 +18,7 @@ const documents = (state = {filelist: []}, action) => {
                 return f;
             }))});
         case "UPDATE_DOCUMENT":
-            const i = state.filelist.findIndex(f => f.id === action.payload.id);
+            i = state.filelist.findIndex(f => f.id === action.payload.id);
             filelist = [...state.filelist];
             filelist[i] = Object.assign({}, filelist[i], action.payload);
             return Object.assign({}, state, {filelist: filelist});
@@ -29,6 +29,11 @@ const documents = (state = {filelist: []}, action) => {
             console.log(sourceIndex, destIndex)
             filelist.splice(sourceIndex, 1);
             filelist.splice(destIndex, 0, doc)
+            return Object.assign({}, state, {filelist: filelist});
+         case "REMOVE_DOCUMENT":
+            i = state.filelist.findIndex(f => f.id === action.payload.id);
+            filelist = [...state.filelist];
+            filelist.splice(i, 1);
             return Object.assign({}, state, {filelist: filelist});
 
     }
