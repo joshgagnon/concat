@@ -4,7 +4,6 @@ import * as ReactDOM from "react-dom";
 import { Provider, connect } from 'react-redux';
 import { Store, createStore } from 'redux';
 import configureStore from './configureStore.ts';
-import * as DropZone from 'react-dropzone';
 import '../style/style.scss';
 import * as axios from 'axios';
 import { addDocuments, updateDocument, submitDocuments, moveDocument } from './actions.ts';
@@ -72,6 +71,7 @@ const documentDragSource = {
   }
 };
 
+
 const documentDragTarget = {
   hover(props, monitor, component) {
     const dragIndex = monitor.getItem().index;
@@ -128,7 +128,6 @@ class DocumentView extends React.Component<DocumentViewProps, {}>  {
             axios.post('/upload', data,
                 {
                     progress: (progressEvent) => {
-                        console.log(progressEvent)
                         // upload loading percentage
                         const percentCompleted = progressEvent.loaded / progressEvent.total;
                         props.updateDocument({progress: percentCompleted});
@@ -147,12 +146,13 @@ class DocumentView extends React.Component<DocumentViewProps, {}>  {
 
         return connectDragSource(connectDropTarget(<div className="document" style={{opacity}}>
                 <div className="image">
+                    { this.props.document.uuid && <img src={`/thumb/${this.props.document.uuid}`} /> }
                 </div>
                 <div className="filename">
                     { this.props.document.filename }
                 </div>
                 <ReactCSSTransitionGroup transitionName="progress" transitionEnterTimeout={300} transitionLeaveTimeout={500}>
-                { this.props.document.status === 'posting'  &&
+                { (this.props.document.status === 'posting')  &&
 
                     <div className="progress" key="progress">
                       <div className="progress-bar progress-bar-striped active" style={{width: `${this.props.document.progress*100}%`}}>
@@ -201,6 +201,26 @@ class DocumentList extends React.Component<DocumentListProps, {}> {
     }
 }
 
+class FileDropZone extends React.Component<{connectDropTarget: Function, isOver: boolean, canDrop: boolean}, {}> {
+    render() {
+        const { connectDropTarget, isOver, canDrop } = this.props;
+        return connectDropTarget(
+            <div className="dropzone"></div>
+        );
+    }
+}
+
+const fileTarget = {
+    drop(props, monitor) {
+        props.onDrop(monitor.getItem().files.filter(f => f.type === 'application/pdf'));
+    }
+};
+
+const ConnectedFileDropZone = DropTarget("__NATIVE_FILE__", fileTarget, (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver(),
+  canDrop: monitor.canDrop()
+}))(FileDropZone);
 
 
 class DocumentHandler extends React.Component<DocumentHandlerProps, {}> implements IDocumentHandler {
@@ -217,17 +237,20 @@ class DocumentHandler extends React.Component<DocumentHandlerProps, {}> implemen
     }
 
     render() {
+        const loaded = !!this.props.documents.filelist.length && this.props.documents.filelist.every(f => f.status === 'complete') || true;
         return <div>
-        <DropZone className="dropzone" ref="dropzone" onDrop={this.onDrop} disableClick={true} disablePreview={true} accept={'application/pdf'} style={{}}>
-        </DropZone>
-        <Header />
+            <ConnectedFileDropZone onDrop={this.onDrop} />
+            <Header />
             <div className="container">
                 <DocumentList
                     updateDocument={this.props.updateDocument}
                     documents={this.props.documents}
                     moveDocument={this.props.moveDocument} />
+                { loaded && <div className="button-bar">
+                    <button className="btn btn-primary">Merge</button>
+                </div>}
             </div>
-        </div>
+            </div>
 
 
     }

@@ -61,29 +61,53 @@ body {
         margin-bottom:0;
     }
 }
+.document-list{
+    margin-top: 20px;
+}
 
 .document{
     float:left;
     position: relative;
     width: 170px;
     padding: 10px;
-    margin: 30px;
+    margin: 10px;
     min-height:150px;
     cursor: move;
     background-color: white;
-    .filename{
+    background-color: #f8f8f8;
+    border-radius: 8px;
+
+    $font-size: 12px;
+    $line-height: 1.4;
+    $lines-to-show: 2;
+
+    .filename {
+
+      display: block; /* Fallback for non-webkit */
+      display: -webkit-box;
+      max-width: 400px;
+      height: $font-size*$line-height*$lines-to-show; /* Fallback for non-webkit */
+      margin: 0 auto;
+      font-size: $font-size;
+      line-height: $line-height;
+      -webkit-line-clamp: $lines-to-show;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
         text-align:center;
+        margin-top: 4px;
     }
+
     .image{
         width: 150px;
-        height: 200px;
+        height: 212px;
         background-color:#efefef;
     }
     .progress{
         position:absolute;
-        bottom:50%;
-        left:4px;
-        right:4px;
+        top: 120px;
+        left: 10px;
+        right: 10px;
         margin-bottom: 0;
         height: 16px;
     }
@@ -106,3 +130,9 @@ body {
     right: 0;
 }
 
+
+.button-bar{
+    clear:both;
+    text-align:center;
+    margin: 20px;
+}

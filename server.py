@@ -21,7 +21,11 @@ PORT = 5669
 
 app = Flask(__name__, static_url_path='', static_folder='public')
 
-cmds = ['gs', '-dBATCH', '-dNOPAUSE', '-q', '-sDEVICE=pdfwrite']  # '-dPDFSETTINGS=/prepress']
+concat_cmds = ['gs', '-dBATCH', '-dNOPAUSE', '-q', '-sDEVICE=pdfwrite']  # '-dPDFSETTINGS=/prepress']
+
+thumb_cmds = ['convert', '-thumbnail', '150x', '-background', 'white', '-alpha', 'remove']
+
+
 
 TMP_DIR = '/tmp/.concat/'
 
@@ -29,7 +33,7 @@ TMP_DIR = '/tmp/.concat/'
 def concat(file_ids):
     try:
         output = tempfile.NamedTemporaryFile(suffix='.pdf', delete=False)
-        args = cmds[:] + ['-sOutputFile=%s' % output.name]
+        args = concat_cmds[:] + ['-sOutputFile=%s' % output.name]
 
         for f in file_ids:
             args.append(os.path.join(TMP_DIR, f))
@@ -42,6 +46,20 @@ def concat(file_ids):
         raise e
     finally:
         output.close()
+
+def thumb(file_id):
+    try:
+        output = tempfile.NamedTemporaryFile(suffix='.png', delete=False)
+        args = thumb_cmds[:] + [os.path.join(TMP_DIR, file_id + '.pdf[0]'), output.name]
+        Popen(args,
+              stdout=DEVNULL,
+              stderr=STDOUT).wait()
+        return output.read()
+    except Exception, e:
+        raise e
+    finally:
+        output.close()
+
 
 
 class InvalidUsage(Exception):
@@ -65,7 +83,7 @@ def upload(files):
     for f in files:
         file_id = str(uuid.uuid4())
         results[f.filename] = file_id
-        f.save(os.path.join(TMP_DIR, file_id))
+        f.save(os.path.join(TMP_DIR, file_id + '.pdf'))
     return results
 
 
@@ -73,6 +91,17 @@ def upload(files):
 def upload_files():
     try:
         return jsonify(upload(request.files.getlist("file[]")))
+    except Exception as e:
+        print(e)
+        raise InvalidUsage(e.message, status_code=500)
+
+
+@app.route('/thumb/<uuid>', methods=['GET'])
+def thumbview(uuid):
+    try:
+        result = thumb(uuid)
+        return send_file(BytesIO(result),
+                         mimetype='image/png')
     except Exception as e:
         print(e)
         raise InvalidUsage(e.message, status_code=500)
