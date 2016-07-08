@@ -16,7 +16,7 @@ except ImportError:
 
 logging.basicConfig()
 
-PORT = 5667
+PORT = 5669
 
 
 app = Flask(__name__, static_url_path='', static_folder='public')
