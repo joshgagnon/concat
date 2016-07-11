@@ -40,8 +40,18 @@ const documents = (state = {filelist: []}, action) => {
     return state;
 }
 
+const form = (state = {}, action) => {
+    switch(action.type){
+        case "UPDATE_FORM":
+            return Object.assign({}, state, {[action.payload.key]: action.payload.value})
+    }
+    return state;
+}
+
+
 const rootReducer = combineReducers({
-    documents
+    documents,
+    form
 });
 
 export default rootReducer;

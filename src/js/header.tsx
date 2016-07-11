@@ -41,9 +41,7 @@ export default class Header extends React.Component<{}, {}> {
             </div>
         </div>
         </div>
-        <div className="explanation">
-        Drag PDFs here to join them together
-        </div>
+
         </div>
        }
 }

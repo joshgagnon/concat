@@ -6,7 +6,7 @@ import { Store, createStore } from 'redux';
 import configureStore from './configureStore.ts';
 import '../style/style.scss';
 import * as axios from 'axios';
-import { addDocuments, updateDocument, submitDocuments, moveDocument, removeDocument } from './actions.ts';
+import { addDocuments, updateDocument, submitDocuments, moveDocument, removeDocument, updateForm } from './actions.ts';
 import Header from './header.tsx';
 import Footer from './footer.tsx';
 import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
@@ -24,7 +24,7 @@ const serialize = function(obj, prefix?) {
         k + "=" + encodeURIComponent(v));
     }
   }
-  return str.join("&");
+  return str.filter(s => s).join("&");
 }
 
 function eachSeries(arr: Array<any>, iteratorFn: Function) {
@@ -53,7 +53,9 @@ interface DocumentHandlerProps {
     submitDocuments(options: Object);
     moveDocument(options: Object);
     removeDocument(options: Object);
+    updateForm(options: Object);
     documents: any;
+    form: any;
 };
 
 interface DocumentListProps {
@@ -130,17 +132,6 @@ const documentDragTarget = {
 
 
 class DocumentView extends React.Component<DocumentViewProps, {}>  {
-
-    /*loadData(props){
-        if(!props.document.data){
-            const reader = new FileReader();
-            reader.onload = (event:FileReaderEvent) => {
-                this.props.updateData(event.target.result)
-            };
-            reader.readAsArrayBuffer(props.document.file);
-        }
-    }*/
-
     render() {
         const { isDragging, connectDragSource, connectDropTarget } = this.props;
         const opacity = isDragging ? 0 : 1;
@@ -177,11 +168,12 @@ const DraggableDroppableDocumentView = DropTarget('DOCUMENTS', documentDragTarge
 
 
 class DocumentList extends React.Component<DocumentListProps, {}> {
+
     constructor(props){
         super(props);
         this.moveDocument = this.moveDocument.bind(this);
-    }
 
+    }
     moveDocument(dragIndex, hoverIndex){
         const dragDocument = this.props.documents.filelist[dragIndex];
         this.props.moveDocument({sourceIndex: dragIndex, destIndex: hoverIndex});
@@ -194,7 +186,6 @@ class DocumentList extends React.Component<DocumentListProps, {}> {
     }
     uploadData(props){
         const unUploaded = props.documents.filelist.filter(d => !d.status);
-
         unUploaded.map(doc => {
             props.updateDocument({id: doc.id, status: 'posting', progress: 0});
         });
@@ -215,7 +206,6 @@ class DocumentList extends React.Component<DocumentListProps, {}> {
             })
         });
     }
-
 
     render() {
          return <div className="document-list">
@@ -259,10 +249,13 @@ const ConnectedFileDropZone = DropTarget("__NATIVE_FILE__", fileTarget, (connect
 
 
 class DocumentHandler extends React.Component<DocumentHandlerProps, {}> implements IDocumentHandler {
+    _fileInput;
+
     constructor(props){
         super(props);
         this.onDrop = this.onDrop.bind(this);
-        //this.submit = this.submit.bind(this);
+        this.collectFiles = this.collectFiles.bind(this);
+        this.onClick = this.onClick.bind(this);
     }
 
     onDrop(files) {
@@ -272,28 +265,26 @@ class DocumentHandler extends React.Component<DocumentHandlerProps, {}> implemen
         })));
     }
 
-    /*submit() {
-        axios.get('/concat', {file_ids: },
-            {
-                progress: (progressEvent) => {
-                    // upload loading percentage
-                    const percentCompleted = progressEvent.loaded / progressEvent.total;
-                    props.updateDocument({progress: percentCompleted});
-                }
-            })
-        .then((response) => {
-            props.updateDocument({status: 'complete', uuid: response.data[props.document.filename]});
-        })
-    }*/
+    collectFiles(event) {
+       this.onDrop([].filter.call(event.target.files, f => f.type === 'application/pdf'));
+    }
+    onClick() {
+        if(this._fileInput){
+            this._fileInput.value = null;
+            this._fileInput.click();
+        }
+    }
 
     render() {
         const loaded = !!this.props.documents.filelist.length && this.props.documents.filelist.every(f => f.status === 'complete');
-
-
-        const url = '/concat?' + serialize({file_ids: this.props.documents.filelist.map(f => f.uuid)});
+        const url = '/concat?' + serialize({file_ids: this.props.documents.filelist.map(f => f.uuid), deskew: this.props.form.deskew || false});
         return  <ConnectedFileDropZone onDrop={this.onDrop}>
             <div className="body">
             <Header />
+                 <div className="explanation" onClick={this.onClick}>
+            Drag PDFs here to join them together
+                <input type="file" multiple name="files" style={{display: 'none'}} ref={(el) => this._fileInput = el} onChange={this.collectFiles}/>
+            </div>
             <div className="container">
                 <DocumentList
                     updateDocument={this.props.updateDocument}
@@ -302,7 +293,14 @@ class DocumentHandler extends React.Component<DocumentHandlerProps, {}> implemen
                     removeDocument={this.props.removeDocument}
                      />
                 { loaded && <div className="button-bar">
-                <a href={url} className="btn btn-primary">Merge</a></div> }
+                    <a href={url} className="btn btn-primary">Merge</a>
+                      {/* <div className="checkbox"><label><input type="checkbox" name="deskew"
+                        checked={this.props.form.deskew || false}
+                        onChange={(e) => {
+                            this.props.updateForm({key: 'deskew', value: (e.target as any).checked})
+                    }}/>Deskew</label>
+                </div> */}
+                </div> }
             </div>
             <Footer />
             </div>
@@ -310,12 +308,13 @@ class DocumentHandler extends React.Component<DocumentHandlerProps, {}> implemen
     }
 }
 
-const DocumentHandlerConnected = connect(state => ({documents: state.documents}), {
+const DocumentHandlerConnected = connect(state => ({documents: state.documents, form: state.form}), {
     addDocuments: addDocuments,
     updateDocument: updateDocument,
     submitDocuments: submitDocuments,
     removeDocument: removeDocument,
-    moveDocument: moveDocument
+    moveDocument: moveDocument,
+    updateForm: updateForm
 })(DocumentHandler);
 
 

@@ -158,4 +158,10 @@ html {
     clear:both;
     text-align:center;
     margin: 20px;
+    .checkbox{
+        color:$light-red;
+        label{
+            font-weight:bold;
+        }
+    }
 }

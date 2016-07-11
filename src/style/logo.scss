@@ -2,6 +2,7 @@ $cat-primary: white;
 $cat-secondary: $light-red;
 .logo{
 
+    zoom: 0.5;
 
 .cat{
     position:absolute;
@@ -45,7 +46,7 @@ $cat-secondary: $light-red;
 .cat .ear.left{
     border-width: 20px 0 0 20px;
     border-color: transparent transparent transparent $cat-primary;
-    top:-20px;
+    top:-18px;
     left:0px;
 }
 .cat .ear.left:before{
@@ -64,7 +65,7 @@ $cat-secondary: $light-red;
     border-style: solid;
     border-width: 0 0 20px 20px;
     border-color: transparent transparent $cat-primary transparent ;
-    top:-20px;
+    top:-18px;
     right:0px;
 }
 
@@ -135,15 +136,14 @@ $cat-secondary: $light-red;
     opacity: 1;
 }
 .cat   .nose{
-        position:absolute;
-        left:40px;
-        top: 30px;
-        width:0;
-        height:0;
-
-        border-color: #36465E transparent transparent transparent ;
-        border-width: 10px 10px 0 10px;
-        border-style: solid;
+    position: absolute;
+    left: 43px;
+    top: 30px;
+    width: 0;
+    height: 0;
+    border-color: #36465E transparent transparent transparent;
+    border-width: 12px 7px 0 7px;
+    border-style: solid;
 
 }
 .cat    .mouth{
@@ -229,10 +229,12 @@ $cat-secondary: $light-red;
 }
 
 .cat .whiskers * {
-    background:#36465E;
-    height:2px;
+    background: $cat-secondary;
+    height:9px;
     width:30px;
     position: absolute;
+        border: 3px solid $cat-primary;
+        border-radius: 4px;
 }
 
 .cat .whiskers.right .top{
@@ -296,6 +298,16 @@ $cat-secondary: $light-red;
     }
     100%{
         transform: rotate(-20deg)
+    }
+}
+
+
+@media (min-width: $screen-sm-min){
+    .logo{
+        zoom: 1;
+    }
+    .title{
+        margin-top:36px;
     }
 }
 

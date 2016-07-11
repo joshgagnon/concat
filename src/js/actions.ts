@@ -29,6 +29,6 @@ export const updateDocument = actionCreator<string>('UPDATE_DOCUMENT');
 export const submitDocuments = actionCreator<string>('SUBMIT_DOCUMENTS');
 export const moveDocument = actionCreator<string>('MOVE_DOCUMENT');
 export const removeDocument = actionCreator<string>('REMOVE_DOCUMENT');
-
+export const updateForm = actionCreator<string>('UPDATE_FORM');
 
 

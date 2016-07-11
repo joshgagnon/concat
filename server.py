@@ -30,14 +30,20 @@ thumb_cmds = ['convert', '-thumbnail', '150x', '-background', 'white', '-alpha',
 TMP_DIR = '/tmp/.concat/'
 
 
-def concat_file_ids(file_ids):
+def concat_file_ids(file_ids, options):
     try:
         print(file_ids)
         output = tempfile.NamedTemporaryFile(suffix='.pdf', delete=False)
         args = concat_cmds[:] + ['-sOutputFile=%s' % output.name]
 
+        if options.get('deskew') == 'true':
+            args += ['-deskew', '40']
+
+
         for f in file_ids:
             args.append(os.path.join(TMP_DIR, f)+'.pdf')
+
+        print(' '.join(args))
         Popen(args,
               stdout=DEVNULL,
               stderr=STDOUT).wait()
@@ -112,7 +118,7 @@ def thumbview(uuid):
 @app.route('/concat', methods=['GET'])
 def concat():
     try:
-        result = concat_file_ids(request.args.getlist("file_ids[]"))
+        result = concat_file_ids(request.args.getlist("file_ids[]"), options=request.args)
         return send_file(BytesIO(result),
                          attachment_filename=request.args.get('filename', 'concat-merge.pdf'),
                          as_attachment=True,
