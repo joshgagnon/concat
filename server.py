@@ -140,11 +140,11 @@ def handle_invalid_usage(error):
     return response
 
 
+try:
+    os.makedirs(TMP_DIR)
+except OSError as exception:
+    if exception.errno != errno.EEXIST:
+        raise
 if __name__ == '__main__':
     print('Running on %d' % PORT)
-    try:
-        os.makedirs(TMP_DIR)
-    except OSError as exception:
-        if exception.errno != errno.EEXIST:
-            raise
     app.run(port=PORT, debug=True, host='0.0.0.0')
