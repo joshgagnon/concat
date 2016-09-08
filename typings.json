@@ -1,0 +1,6 @@
+{
+  "globalDependencies": {
+    "pdf": "registry:dt/pdf#0.0.0+20160526141414",
+    "react-addons-shallow-compare": "registry:dt/react-addons-shallow-compare#0.14.0+20160316155526"
+  }
+}

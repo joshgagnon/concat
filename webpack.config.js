@@ -76,7 +76,6 @@ module.exports = {
         !DEV ? new webpack.optimize.UglifyJsPlugin() : function(){},
 
         new HtmlWebpackPlugin({
-            title: 'ConCat - CataLex®',
             //hash: true,
             template: 'src/static/index.ejs',
             inject: 'body'
