@@ -1,12 +1,13 @@
-/*import * as React from "react";
+import * as React from "react";
 import { findDOMNode } from "react-dom";
-import * as PDFJS from 'pdfjs-dist'
+const PDFJS = require('pdfjs-dist');
 
 interface PDFProps {
     data: ArrayBuffer;
     width: number
     finished: Function;
     worker?: boolean;
+    url?: string;
 }
 
 class PDF extends React.Component<PDFProps, any> {
@@ -103,4 +104,3 @@ class PDF extends React.Component<PDFProps, any> {
 
 
 export default PDF;
-*/

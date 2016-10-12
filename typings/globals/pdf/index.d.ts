@@ -21,7 +21,7 @@ interface PDFInfo {
 	PDFFormatVersion: string;
 	IsAcroFormPresent: boolean;
 	IsXFAPresent: boolean;
-	//[key: string]: any;	// return type is string, typescript chokes
+	[key: string]: any;	// return type is string, typescript chokes
 }
 
 interface PDFMetadata {
@@ -430,12 +430,10 @@ interface PDFJSStatic {
 			: PDFPromise<PDFDocumentProxy>;
 
 	PDFViewer(params: PDFViewerParams): void;
-
-    MissingPDFException: Error;
 }
 
 declare var PDFJS: PDFJSStatic;
 
-declare module "pdfjs-dist" {
+declare module "PDFJS" {
 	export = PDFJS;
 }

@@ -12,7 +12,7 @@ import Footer from './footer.tsx';
 import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { DragSource, DropTarget, DragDropContext } from 'react-dnd';
 import *  as HTML5Backend from 'react-dnd-html5-backend';
-
+import * as PDF from './pdf.tsx'
 
 const serialize = function(obj, prefix?) {
   var str = [];
@@ -137,7 +137,7 @@ class DocumentView extends React.Component<DocumentViewProps, {}>  {
         const opacity = isDragging ? 0 : 1;
 
         return connectDragSource(connectDropTarget(<div className="document" style={{opacity}}>
-                <button className="remove" onClick={this.props.removeDocument}>✖</button>
+                <button className="remove" onClick={() => this.props.removeDocument()}>✖</button>
                 <div className="image">
                     { this.props.document.uuid && <img src={`/thumb/${this.props.document.uuid}`} /> }
                 </div>
@@ -308,21 +308,22 @@ class DocumentHandler extends React.Component<DocumentHandlerProps, {}> implemen
     }
 }
 
-const DocumentHandlerConnected = connect(state => ({documents: state.documents, form: state.form}), {
+const DragContext = DragDropContext(HTML5Backend)(DocumentHandler)
+
+const DragContextDocumentHandlerConnected  = connect(state => ({documents: state.documents, form: state.form}), {
     addDocuments: addDocuments,
     updateDocument: updateDocument,
     submitDocuments: submitDocuments,
     removeDocument: removeDocument,
     moveDocument: moveDocument,
     updateForm: updateForm
-})(DocumentHandler);
+})(DragContext);
 
 
-const DragContextDocumentHandlerConnected = DragDropContext(HTML5Backend)(DocumentHandlerConnected)
 
 class App extends React.Component<{}, {}> {
     render() {
-        return <DragContextDocumentHandlerConnected />
+        return <DragContextDocumentHandlerConnected  />
     }
 }
 
