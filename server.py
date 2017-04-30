@@ -132,6 +132,9 @@ def concat():
 def index():
     return app.send_static_file('index.html')
 
+@app.route('/status', methods=['GET'])
+def status():
+    return app.send_static_file('status.html')
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):

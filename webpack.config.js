@@ -77,9 +77,17 @@ module.exports = {
 
         new HtmlWebpackPlugin({
             //hash: true,
+            filename: 'index.html',
             template: 'src/static/index.ejs',
             inject: 'body'
+          }),
+        new HtmlWebpackPlugin({
+            //hash: true,
+            filename: 'status.html',
+            template: 'src/static/status.ejs',
+            inject: false
           })
+
 
 
     ]
