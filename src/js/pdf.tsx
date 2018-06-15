@@ -1,5 +1,7 @@
 import * as React from "react";
 import { findDOMNode } from "react-dom";
+import * as Promise from 'bluebird';
+
 const PDFJS = require('pdfjs-dist');
 
 interface PDFProps {
@@ -8,6 +10,7 @@ interface PDFProps {
     finished: Function;
     worker?: boolean;
     url?: string;
+    scale?: number;
 }
 
 class PDF extends React.Component<PDFProps, any> {
@@ -52,7 +55,7 @@ class PDF extends React.Component<PDFProps, any> {
     completeDocument(pdf) {
         this.setState({ pdf: pdf, error: null });
         this._pagePromises && this._pagePromises.isPending() && this._pagePromises.cancel();
-        return this._pagePromises = Promise.map(Array(this.state.pdf.numPages).fill(), (p, i) => {
+        return this._pagePromises = Promise.map(new Array(this.state.pdf.numPages).fill(), (p, i) => {
             return pdf.getPage(i + 1);
         })
         .then((pages) => {
@@ -72,7 +75,7 @@ class PDF extends React.Component<PDFProps, any> {
     componentDidUpdate() {
         if(this.state.pdf && this.state.pages){
             this.state.pages.map((page, i) => {
-                const canvas = findDOMNode(this.refs[i]),
+                const canvas = findDOMNode(this.refs[i]) as HTMLCanvasElement,
                     context = canvas.getContext('2d'),
                     scale = this.props.scale || 1,
                     viewport = page.getViewport(canvas.width / page.getViewport(scale).width);
@@ -95,7 +98,7 @@ class PDF extends React.Component<PDFProps, any> {
             return <div>No Document to show</div>
         }
         return <div>
-            { Array(this.state.pdf.numPages).fill().map((page, i) => {
+            { (new Array(this.state.pdf.numPages)).fill().map((page, i) => {
                 return <canvas key={i} ref={i} width={ this.props.width || 1500}  />
             }) }
         </div>

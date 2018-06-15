@@ -21,7 +21,16 @@ PORT = 5669
 
 app = Flask(__name__, static_url_path='', static_folder='public')
 
-concat_cmds = ['gs', '-dBATCH', '-dNOPAUSE', '-q', '-sDEVICE=pdfwrite']  # '-dPDFSETTINGS=/prepress']
+concat_cmds = ['gs', '-dSAFER', '-dBATCH', '-dNOPAUSE', '-dCompatibilityLevel=1.4', '-q', '-sDEVICE=pdfwrite',
+    '-sColorConversionStrategy=/LeaveColorUnchanged'
+    '-dAutoFilterColorImages=true',
+    '-dAutoFilterGrayImages=true',
+    '-dDownsampleMonoImages=true',
+    '-dDownsampleGrayImages=true',
+    '-dDownsampleColorImages=true',
+    '-dColorImageResolution=144'
+     #'-dPDFSETTINGS=/ebook'
+]
 
 thumb_cmds = ['convert', '-thumbnail', '150x', '-background', 'white', '-alpha', 'remove']
 
@@ -52,7 +61,6 @@ def concat_file_ids(file_ids, options):
         raise e
     finally:
         output.close()
-
 
 
 def thumb(file_id):
@@ -94,6 +102,12 @@ def upload(files):
         f.save(os.path.join(TMP_DIR, file_id + '.pdf'))
     return results
 
+def remove(file_ids):
+    for file_id in file_ids:
+        try:
+            os.remove(os.path.join(TMP_DIR, file_id + '.pdf'))
+        except: pass
+
 
 @app.route('/upload', methods=['POST'])
 def upload_files():
@@ -127,6 +141,20 @@ def concat():
         print(e)
         raise InvalidUsage(e.message, status_code=500)
 
+
+@app.route('/upload_concat', methods=['POST'])
+def upload_concat():
+    try:
+        file_ids = list(upload(request.files.getlist("file[]")).values())
+        result = concat_file_ids(file_ids, options=request.args)
+        remove(file_ids)
+        return send_file(BytesIO(result),
+                         attachment_filename=request.args.get('filename', 'concat-merge.pdf'),
+                         as_attachment=True,
+                         mimetype='application/pdf')
+    except Exception as e:
+        print(e)
+        raise InvalidUsage(e.message, status_code=500)
 
 @app.route('/', methods=['GET'])
 def index():
