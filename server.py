@@ -145,7 +145,9 @@ def concat():
 @app.route('/upload_concat', methods=['POST'])
 def upload_concat():
     try:
-        file_ids = list(upload(request.files.getlist("file[]")).values())
+
+        uploads = upload(request.files.getlist("file[]"))
+        file_ids = map(lambda x: uploads[x.filename], request.files.getlist("file[]"))
         result = concat_file_ids(file_ids, options=request.args)
         remove(file_ids)
         return send_file(BytesIO(result),
