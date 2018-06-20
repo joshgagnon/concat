@@ -27,7 +27,7 @@ concat_cmds = ['gs', '-dSAFER', '-dBATCH', '-dNOPAUSE', '-dCompatibilityLevel=1.
     '-dAutoFilterGrayImages=true',
     '-dDownsampleMonoImages=true',
     '-dDownsampleGrayImages=true',
-    '-dDownsampleColorImages=true',
+    #'-dDownsampleColorImages=true',
     '-dColorImageResolution=144'
      #'-dPDFSETTINGS=/ebook'
 ]
@@ -52,7 +52,6 @@ def concat_file_ids(file_ids, options):
         for f in file_ids:
             args.append(os.path.join(TMP_DIR, f)+'.pdf')
 
-        print(' '.join(args))
         Popen(args,
               stdout=DEVNULL,
               stderr=STDOUT).wait()
